@@ -45,3 +45,4 @@ dog\remote.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
 dog\remote.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h
 dog\remote.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
 dog\remote.o: ../usr/inc/cal.h
+dog\remote.o: ../usr/inc/dog.h

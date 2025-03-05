@@ -41,12 +41,12 @@ typedef struct {
     uint8_t error_code;  // 错误代码
 } StatusFlag;
 
-// 完整狗腿结构体
 typedef struct {
-    float rod[4];  // 运动学参数
-    JointState     state;   // 实时状态
-    ControlParam   control; // 控制参数
-    StatusFlag     flags;   // 状态标志
+    float rod[4];  
+    JointState     state;   
+    ControlParam   control; 
+    StatusFlag     flags;   
+	FootState      foot;
     uint8_t        leg_id;
 } Leg_Param;
 #endif

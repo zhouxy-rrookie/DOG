@@ -100,11 +100,76 @@ void Linkage_Calc(Leg_Param* leg,float alpha,float beta,float alpha_dot,float be
 }
 
 /**
+ * @brief 通过角度约束选择合适的解
+ * @param a1 a1 逆解算得到的两个解
+ * @param limits[2] 角度约束
+ */
+float validate_angle(float a1, float a2, const float limits[2]) {
+    float angle = a1;
+    if (a1 < limits[0] || a1 > limits[1]) {
+        angle = a2;
+        if (a2 < limits[0] || a2 > limits[1]) {
+            return limits[0]; 
+        }
+    }
+    return angle;
+}
+
+/**
  * @brief 四连杆运动学逆解,输入足端位置,输出电机转角；输入足端速度,输出电机转速
  * @param Leg_Param 狗腿结构体
  * @param alpha,beta,电机输入角度
  */
-int Linkage_Inverse()
+int Linkage_Inverse(Leg_Param *leg, float x_C,float y_C, float x_dot_C, float y_dot_C)
 {
-
+	float alpha_A,alpha_B,alpha_C,beta_A,beta_B,beta_C;
+	float alpha_theta,beta_theta;
+	float alpha_1,alpha_2,beta_1,beta_2;
+	
+	alpha_A = x_C/leg->rod[0];
+	alpha_B = y_C/leg->rod[0];
+	alpha_C = (x_C*x_C+y_C*y_C+leg->rod[0]*leg->rod[0]-leg->rod[1]*leg->rod[1])/2/(leg->rod[0]*leg->rod[0]);
+	
+	beta_A = x_C/leg->rod[2];
+	beta_B = y_C/leg->rod[2];
+	beta_C = (x_C*x_C+y_C*y_C+leg->rod[2]*leg->rod[2]-leg->rod[3]*leg->rod[3])/2/(leg->rod[2]*leg->rod[2]);
+	
+	alpha_theta = atan2f(alpha_B,alpha_A);
+	beta_theta = atan2f(beta_B,beta_A);
+	
+	alpha_1 = alpha_theta+acosf(alpha_C/(sqrtf(alpha_A*alpha_A+alpha_B*alpha_B)));
+	alpha_2 = alpha_theta-acosf(alpha_C/(sqrtf(alpha_A*alpha_A+alpha_B*alpha_B)));
+	beta_1 = beta_theta+acosf(beta_C/(sqrtf(beta_A*beta_A+beta_B*beta_B)));
+	beta_2 = beta_theta-acosf(beta_C/(sqrtf(beta_A*beta_A+beta_B*beta_B)));
+	
+	leg->state.alpha = validate_angle(alpha_1,alpha_2,leg->state.joint_limit[0]);
+	leg->state.beta = validate_angle(beta_1,beta_2,leg->state.joint_limit[1]);
+	
+	float sin_alpha = sinf(leg->state.alpha);
+    float cos_alpha = cosf(leg->state.alpha);
+    float sin_beta = sinf(leg->state.beta);
+    float cos_beta = cosf(leg->state.beta);
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

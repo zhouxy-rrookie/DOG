@@ -24,6 +24,7 @@ typedef struct {
     float beta;          // 关节实际β角
     float alpha_dot;     // 电机1转速
     float beta_dot;      // 电机2转速
+	float joint_limit[2][2];
 } JointState;
 
 // 控制参数结构体

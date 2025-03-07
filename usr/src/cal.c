@@ -120,7 +120,7 @@ float validate_angle(float a1, float a2, const float limits[2]) {
  * @param Leg_Param 狗腿结构体
  * @param alpha,beta,电机输入角度
  */
-int Linkage_Inverse(Leg_Param *leg, float x_C,float y_C, float x_dot_C, float y_dot_C)
+void Linkage_Inverse(Leg_Param *leg, float x_C,float y_C, float x_dot_C, float y_dot_C)
 {
 	float alpha_A,alpha_B,alpha_C,beta_A,beta_B,beta_C;
 	float alpha_theta,beta_theta;
@@ -150,8 +150,51 @@ int Linkage_Inverse(Leg_Param *leg, float x_C,float y_C, float x_dot_C, float y_
     float sin_beta = sinf(leg->state.beta);
     float cos_beta = cosf(leg->state.beta);
 	
+	float detJ = leg->rod[0]*leg->rod[2]*(sin_alpha*cos_beta - cos_alpha*sin_beta);
+    if (fabs(detJ) < 1e-6) {
+        leg->state.alpha_dot = 0;
+        leg->state.beta_dot = 0;
+        return;
+    }
 	
+    leg->state.alpha_dot = ( leg->rod[2]*cos_beta*x_dot_C + leg->rod[2]*sin_beta*y_dot_C) / detJ;
+    leg->state.beta_dot  = (-leg->rod[0]*cos_alpha*x_dot_C - leg->rod[0]*sin_alpha*y_dot_C) / detJ;
 }
+
+/**
+ * @brief 雅可比矩阵,输入电机力矩,输出足端力；
+ * @param Leg_Param 狗腿结构体
+ * @param alpha,beta,电机输入角度
+ */
+void Jacobi_Matrix(Leg_Param *leg, float Torque_alpha, float Torque_beta)
+{
+	float x_B,y_B,x_C,y_C,x_D,y_D,x_dot_B,x_dot_D,y_dot_B,y_dot_D,x_dot_C,y_dot_C;
+	float sin_phi1,cos_phi1,sin_phi2,cos_phi2,phi1_dot;
+	float A,B,C,D;
+
+	x_B = leg->rod[0]*cosf(leg->state.alpha);
+	y_B = leg->rod[0]*sinf(leg->state.alpha);
+	x_D = leg->rod[2]*cosf(leg->state.beta);
+	y_D = leg->rod[2]*sinf(leg->state.beta);
+	
+	A = 2*(x_B-x_D)*leg->rod[1];
+	B = 2*(y_B-y_D)*leg->rod[1];
+	D = (x_B-x_D)*(x_B-x_D)+(y_B-y_D)*(y_B-y_D);
+	C = D*D+leg->rod[1]*leg->rod[1]-leg->rod[3]*leg->rod[3];
+	
+	cos_phi1 = (-A*C-B*sqrtf(A*A+B*B-C*C))/(A*A+B*B);
+	sin_phi1 = (-C-A*cos_phi1)/B;
+	cos_phi2 = (x_B-x_D+leg->rod[1]*cos_phi1)/leg->rod[3];
+	sin_phi2 = (y_B-y_D+leg->rod[1]*sin_phi1)/leg->rod[3];
+	float sin_phi12 = sin_phi1*cos_phi2-sin_phi2*cos_phi1;
+	
+	float Jacobi[2][2];
+	Jacobi[0][0] = leg->rod[0]*sin_phi2*(sinf(leg->state.alpha)*cos_phi1-cos(leg->state.alpha)*sin_phi1)/sin_phi12;
+	Jacobi[0][1] = -leg->rod[2]*sin_phi1*(sinf(leg->state.beta)*cos_phi2-cosf(leg->state.beta)*sin_phi2)/sin_phi12;
+	Jacobi[1][0] = -leg->rod[0]*cos_phi2*(sinf(leg->state.alpha)*cos_phi1-cosf(leg->state.alpha)*sin_phi1)/sin_phi12;
+	Jacobi[1][1] = leg->rod[2]*cos_phi1*(sinf(leg->state.beta)*cos_phi2-cosf(leg->state.beta)*sin_phi2)/sin_phi12;
+}
+
 
 
 

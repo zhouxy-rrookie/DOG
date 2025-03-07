@@ -4,17 +4,13 @@
 uint32_t flag = 0;
 HAL_StatusTypeDef flag_m;
 
-MOTOR_recv data;
-MOTOR_send cmd = {
-	.id=0,		
-	.mode=1,
-	.T=0.0f,
-	.W=0.0f,
-	.Pos=0.0f,
-	.K_P=0.0f,
-	.K_W=0.0f,
+MOTOR_recv data[8];
+MOTOR_send cmd[8] = { 
+    {.id = 0, .mode = 1}, {.id = 1, .mode = 1},
+    {.id = 2, .mode = 1}, {.id = 3, .mode = 1},
+    {.id = 4, .mode = 1}, {.id = 5, .mode = 1},
+    {.id = 6, .mode = 1}, {.id = 7, .mode = 1}
 };
-
 void Set_zero(MOTOR_send* cmd)
 {
 	cmd->K_P = 0;
@@ -88,13 +84,13 @@ void FMotor_Task(void *argument)
 	const TickType_t delay = pdMS_TO_TICKS(100);
   for(;;)
   {
-		vel = data_convert1(Remote_Ctrl.CH2,195,1795,-40,40);
-		//vel = data_convert(num,195,1795,0,500);
-		Set_Torque(&cmd, 3, 0.00);
-		//Set_vel(&cmd, 0, vel, Kw);
-		//Set_pos(&cmd,1,pos,0.01,0.01);
-    flag_m = SERVO_Send_recv(&cmd, &data);
-		flag++;
-		vTaskDelay(delay);
+	//vel = data_convert1(Remote_Ctrl.CH2,195,1795,-40,40);
+	for(int i = 0; i < 8; i++)
+	{
+		Set_vel(&cmd[i], 0, 20,0.02);
+		flag_m = SERVO_Send_recv(&cmd[i], &data[i]);
+	}
+	flag++;
+	vTaskDelay(delay);
   }
 }

@@ -65,3 +65,9 @@ dog\main.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
 dog\main.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
 dog\main.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
 dog\main.o: ../device/WS2812/ws2812.h
+dog\main.o: ../usr/inc/motor_ctr.h
+dog\main.o: ../motor/inc/motor_control.h
+dog\main.o: ../motor/inc/ris_protocol.h
+dog\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+dog\main.o: ../usr/inc/cal.h
+dog\main.o: ../usr/inc/dog.h

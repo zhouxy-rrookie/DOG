@@ -56,7 +56,5 @@ dog\motor_ctr.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 dog\motor_ctr.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 dog\motor_ctr.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 dog\motor_ctr.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdbool.h
-dog\motor_ctr.o: ../device/remote/remote.h
-dog\motor_ctr.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdlib.h
-dog\motor_ctr.o: D:\MDK5\ARM\ARMCC\Bin\..\include\string.h
-dog\motor_ctr.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
+dog\motor_ctr.o: ../usr/inc/cal.h
+dog\motor_ctr.o: ../usr/inc/dog.h

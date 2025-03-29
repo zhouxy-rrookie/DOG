@@ -87,17 +87,50 @@ int extract_data(MOTOR_recv *motor_r)
     }
 }
 
-HAL_StatusTypeDef SERVO_Send_recv(MOTOR_send *pData, MOTOR_recv *rData)
+HAL_StatusTypeDef SERVO_Send_recv_ch1(MOTOR_send *pData, MOTOR_recv *rData)
 {
     uint16_t rxlen = 0;
 
     modify_data(pData);
     
-		SET_485_TR2();
+	SET_485_TR1();
+    HAL_UART_Transmit(&huart3, (uint8_t *)pData, sizeof(pData->motor_send_data), 10); 
+		
+
+	SET_485_RE1();
+    HAL_UARTEx_ReceiveToIdle(&huart3, (uint8_t *)rData, sizeof(rData->motor_recv_data), &rxlen, 10);
+		
+
+    if(rxlen == 0)
+
+      return HAL_TIMEOUT;
+
+    if(rxlen != sizeof(rData->motor_recv_data))
+			return HAL_ERROR;
+
+    uint8_t *rp = (uint8_t *)&rData->motor_recv_data;
+    if(rp[0] == 0xFD && rp[1] == 0xEE)
+    {
+        rData->correct = 1;
+        extract_data(rData);
+        return HAL_OK;
+    }
+    
+    return HAL_ERROR;
+}
+
+
+HAL_StatusTypeDef SERVO_Send_recv_ch2(MOTOR_send *pData, MOTOR_recv *rData)
+{
+    uint16_t rxlen = 0;
+
+    modify_data(pData);
+    
+	SET_485_TR2();
     HAL_UART_Transmit(&huart2, (uint8_t *)pData, sizeof(pData->motor_send_data), 10); 
 		
 
-		SET_485_RE2();
+	SET_485_RE2();
     HAL_UARTEx_ReceiveToIdle(&huart2, (uint8_t *)rData, sizeof(rData->motor_recv_data), &rxlen, 10);
 		
 

@@ -55,3 +55,10 @@ dog\imu_temp_ctrl.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_gr
 dog\imu_temp_ctrl.o: ../device/BMI088/inc/BMI088driver.h
 dog\imu_temp_ctrl.o: ../Core/Inc/gpio.h
 dog\imu_temp_ctrl.o: ../Core/Inc/tim.h
+dog\imu_temp_ctrl.o: ../usr/inc/cal.h
+dog\imu_temp_ctrl.o: ../usr/inc/dog.h
+dog\imu_temp_ctrl.o: D:\MDK5\ARM\ARMCC\Bin\..\include\stdbool.h
+dog\imu_temp_ctrl.o: ../usr/inc/motor_ctr.h
+dog\imu_temp_ctrl.o: ../motor/inc/motor_control.h
+dog\imu_temp_ctrl.o: ../motor/inc/ris_protocol.h
+dog\imu_temp_ctrl.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h

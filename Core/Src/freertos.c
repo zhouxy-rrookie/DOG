@@ -52,6 +52,7 @@ osThreadId Motor_TaskHandle;
 osThreadId IMU_TaskHandle;
 uint32_t IMU_TaskBuffer[ 128 ];
 osStaticThreadDef_t IMU_TaskControlBlock;
+osThreadId Start_TaskHandle;
 osSemaphoreId imuBinarySem01Handle;
 osStaticSemaphoreDef_t imuBinarySem01ControlBlock;
 
@@ -61,8 +62,9 @@ osStaticSemaphoreDef_t imuBinarySem01ControlBlock;
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
-void FMotor_Task(void const * argument);
+void FMotor_Task(void* argument);
 void FIMU_Task(void const * argument);
+void FStart_Task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -126,6 +128,10 @@ void MX_FREERTOS_Init(void) {
   osThreadStaticDef(IMU_Task, FIMU_Task, osPriorityHigh, 0, 128, IMU_TaskBuffer, &IMU_TaskControlBlock);
   IMU_TaskHandle = osThreadCreate(osThread(IMU_Task), NULL);
 
+  /* definition and creation of Start_Task */
+  osThreadDef(Start_Task, FStart_Task, osPriorityHigh, 0, 128);
+  Start_TaskHandle = osThreadCreate(osThread(Start_Task), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -157,7 +163,7 @@ void StartDefaultTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_FMotor_Task */
-__weak void FMotor_Task(void const * argument)
+__weak void FMotor_Task(void* argument)
 {
   /* USER CODE BEGIN FMotor_Task */
   /* Infinite loop */
@@ -184,6 +190,24 @@ __weak void FIMU_Task(void const * argument)
     osDelay(1);
   }
   /* USER CODE END FIMU_Task */
+}
+
+/* USER CODE BEGIN Header_FStart_Task */
+/**
+* @brief Function implementing the Start_Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_FStart_Task */
+__weak void FStart_Task(void const * argument)
+{
+  /* USER CODE BEGIN FStart_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END FStart_Task */
 }
 
 /* Private application code --------------------------------------------------*/

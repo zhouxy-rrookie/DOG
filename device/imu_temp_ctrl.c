@@ -3,6 +3,7 @@
 #include "BMI088driver.h"
 #include "gpio.h"
 #include "tim.h"
+#include "cal.h"
 
 #define DES_TEMP    40.0f
 #define KP          100.f
@@ -51,7 +52,8 @@ void FIMU_Task(void const * argument)
         }
         
         htim3.Instance->CCR4 = (uint16_t)out;
-				vTaskDelay(pdMS_TO_TICKS(5));
+				vTaskDelay(pdMS_TO_TICKS(100));
+		
     }
 }
 /**

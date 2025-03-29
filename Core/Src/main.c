@@ -31,6 +31,10 @@
 #include "BMI088driver.h"
 #include "remote.h"
 #include "ws2812.h"
+#include "motor_ctr.h"
+#include "cal.h"
+#include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,11 +113,12 @@ int main(void)
   MX_SPI6_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-	HAL_GPIO_WritePin(GPIOC,GPIO_PIN_14,1);
-  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,1);
+	HAL_GPIO_WritePin(GPIOC,GPIO_PIN_14,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, GPIO_PIN_SET);
 	BSP_USART_Init();
 	HAL_TIM_Base_Start_IT(&htim2);
+//	Motor_Init(&leg[0],&leg[1],&leg[2],&leg[3]);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
@@ -194,8 +199,20 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-	static uint8_t led_state = 0;
+static uint8_t led_state = 0;
+void FStart_Task(void const * argument)
+{
+//  vTaskDelete(&Motor_TaskHandle);
+  for(;;)
+  {
+    Motor_Init(&leg[0],&leg[1],&leg[2],&leg[3]);
+	vTaskDelay(10);
+	if(Init_OK == 1){
+		xTaskCreate(FMotor_Task, "Motor_Task", 128, NULL, tskIDLE_PRIORITY +3,NULL);
+		vTaskDelete(NULL);
+	}
+  }
+}
 /* USER CODE END 4 */
 
  /* MPU Configuration */

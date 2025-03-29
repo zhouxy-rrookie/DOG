@@ -160,5 +160,6 @@ typedef struct
 uint32_t crc32_core(uint32_t *ptr, uint32_t len);
 int modify_data(MOTOR_send *motor_s);
 int extract_data(MOTOR_recv *motor_r);
-HAL_StatusTypeDef SERVO_Send_recv(MOTOR_send *pData, MOTOR_recv *rData);
+HAL_StatusTypeDef SERVO_Send_recv_ch1(MOTOR_send *pData, MOTOR_recv *rData);
+HAL_StatusTypeDef SERVO_Send_recv_ch2(MOTOR_send *pData, MOTOR_recv *rData);
 #endif
